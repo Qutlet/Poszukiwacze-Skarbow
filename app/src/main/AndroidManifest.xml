@@ -7,6 +7,7 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PoszukiwaczeSkarbów">
-        <activity android:name=".ui.ProfilUzytkownika"></activity>
+        <activity android:name=".ui.ProfilUzytkownika"/>
         <activity android:name=".ui.Info" />
         <activity android:name=".ui.Rejestracja" />
         <activity android:name=".ui.Logowanie" />
@@ -35,7 +36,7 @@
             android:name=".ui.SzukajSkarb"
             android:label="@string/title_activity_szukaj_skarb" />
         <activity
-            android:name=".logika.DodajSkarb"
+            android:name=".ui.DodajSkarb"
             android:label="@string/title_activity_dodaj_skarb" />
         <activity android:name=".ui.Wybor" />
         <activity android:name=".PoszukiwaczeSkarbow">
