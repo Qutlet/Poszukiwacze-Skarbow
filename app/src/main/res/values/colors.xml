@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
+  ~ Copyright (c) 2020. All rights reserved
+  ~ Last modified 23.12.20 13:20
+  -->
+
 <resources>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

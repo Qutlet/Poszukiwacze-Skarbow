@@ -1,3 +1,9 @@
+/*
+ * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
+ * Copyright (c) 2020. All rights reserved
+ * Last modified 23.12.20 14:35
+ */
+
 package com.example.poszukiwaczeskarbw;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.poszukiwaczeskarbw.ui.DodajSkarb;
+import com.example.poszukiwaczeskarbw.ui.SzukajSkarb;
 
 public class PoszukiwaczeSkarbow extends AppCompatActivity {
 
@@ -19,7 +26,8 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intet = new Intent(getApplicationContext(), DodajSkarb.class);
+                //Intent intet = new Intent(getApplicationContext(), DodajSkarb.class);
+                Intent intet = new Intent(getApplicationContext(), SzukajSkarb.class);
                 startActivity(intet);
             }
         });

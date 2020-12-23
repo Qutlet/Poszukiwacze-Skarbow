@@ -1,3 +1,9 @@
+/*
+ * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
+ * Copyright (c) 2020. All rights reserved
+ * Last modified 23.12.20 14:33
+ */
+
 package com.example.poszukiwaczeskarbw.ui;
 
 import androidx.fragment.app.FragmentActivity;
@@ -60,6 +66,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 System.out.println(markerList.get(0).getPosition().toString());
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(markerList.get(0).getPosition()));
             }
         });
     }
