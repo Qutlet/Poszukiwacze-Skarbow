@@ -27,11 +27,11 @@ public class Baza {
     /**
      * otwarcie polaczenia z baza danych
      */
-    private void polacz() {
+    public void polacz() {
         StrictMode.ThreadPolicy politka = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(politka);
         try {
-            @SuppressLint("AuthLeak") final String parametryPoloczenia = "jdbc:sqlserver://poszukiwaczeskarbow.database.windows.net:1433;database=PoszukiwaczeSkarbow;user=qutelt@poszukiwaczeskarbow;password=YmsupDsk7pmTCU9;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+            final String parametryPoloczenia = "jdbc:sqlserver://poszukiwaczeskarbow.database.windows.net:1433;database=PoszukiwaczeSkarbow;user=qutelt@poszukiwaczeskarbow;password=YmsupDsk7pmTCU9;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
             final String sterownikSQL = "net.sourceforge.jtds.jdbc.Driver";
             Class.forName(sterownikSQL);
             polaczenie = DriverManager.getConnection(parametryPoloczenia);

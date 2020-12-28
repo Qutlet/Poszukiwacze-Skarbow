@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.poszukiwaczeskarbw.logika.Baza;
 import com.example.poszukiwaczeskarbw.ui.DodajSkarb;
 import com.example.poszukiwaczeskarbw.ui.SzukajSkarb;
 
@@ -28,7 +29,9 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
             public void onClick(View v) {
                 //Intent intet = new Intent(getApplicationContext(), DodajSkarb.class);
                 Intent intet = new Intent(getApplicationContext(), SzukajSkarb.class);
-                startActivity(intet);
+                //startActivity(intet);
+                Baza baza = Baza.getBaza();
+                baza.polacz();
             }
         });
     }
