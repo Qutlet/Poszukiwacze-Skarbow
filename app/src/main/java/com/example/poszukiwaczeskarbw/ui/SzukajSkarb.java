@@ -13,7 +13,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -57,27 +60,11 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+            requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -89,27 +76,49 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-
     @Override
     public void onLocationChanged(@NonNull Location location) {
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-        //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-
-        //move map camera
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         mMap.animateCamera(cameraUpdate);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        System.out.println("ja dzialam");
+
+
+        //trzeba sprawdzic czy uzytkownik znajduje sie w/w bliskej odlegosci od punktcie/u kontrolnym/ego
+        //wyswitlic zadanie
+        //przestawic marker
+        //powtorzyc
+        //if (lokacja == mapa.punkt[i].lokacja) {
+        //  if(dojscieDoKolejnegoPunktuKontrolnego(mapa.punkt[i].zadanie)) {
+        //
+        //  }
+        //}
+
 
     }
+
+//    private boolean dojscieDoKolejnegoPunktuKontrolnego(String zadanieKontrolne){
+//
+//    }
+
+    void requestPermissions (Activity activity, String[] permissions, int requestCode){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Zezwól na dostęp do lokolizacji")
+                .setMessage("cos")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ActivityCompat.requestPermissions(activity, permissions, requestCode);
+                    }
+                });
+        builder.create().show();
+    }
+
 }

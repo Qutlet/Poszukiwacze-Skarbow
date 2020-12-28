@@ -168,7 +168,7 @@ public class Baza {
             //TODO: dodac ewentualna obsluge wyjatku
             e.printStackTrace();
         }
-        zapytanie = "slect count(*) from Mapy where idAutora = " + uzytkowniczek.getIdUzytkownika();
+        zapytanie = "select count(*) from Mapy where idAutora = " + uzytkowniczek.getIdUzytkownika();
         try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
             ResultSet tablicaWynikow = komunikat.executeQuery();
             if (tablicaWynikow.next()) {
