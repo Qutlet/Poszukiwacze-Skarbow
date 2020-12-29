@@ -26,8 +26,8 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intet = new Intent(getApplicationContext(), DodajSkarb.class);
-                Intent intet = new Intent(getApplicationContext(), SzukajSkarb.class);
+                Intent intet = new Intent(getApplicationContext(), DodajSkarb.class);
+                //Intent intet = new Intent(getApplicationContext(), SzukajSkarb.class);
                 startActivity(intet);
             }
         });
