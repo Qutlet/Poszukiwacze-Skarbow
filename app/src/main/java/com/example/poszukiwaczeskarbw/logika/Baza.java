@@ -27,7 +27,7 @@ public class Baza {
     /**
      * otwarcie polaczenia z baza danych
      */
-    private void polacz() {
+    public void polacz() {
         StrictMode.ThreadPolicy politka = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(politka);
         try {

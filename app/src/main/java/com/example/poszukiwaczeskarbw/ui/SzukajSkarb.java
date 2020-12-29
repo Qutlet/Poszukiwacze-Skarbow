@@ -7,28 +7,24 @@
 package com.example.poszukiwaczeskarbw.ui;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.poszukiwaczeskarbw.R;
-import com.google.android.gms.common.ConnectionResult;
+import com.example.poszukiwaczeskarbw.logika.Mapa;
+import com.example.poszukiwaczeskarbw.logika.Zadanie;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,11 +38,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
+    private Mapa mapa;
     Location mLastLocation;
-    Marker mCurrLocationMarker;
+    Marker wskaznikNastepnegoPukntyKontrolnego;
     private LocationManager locationManager;
-    private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 1000;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
 
@@ -62,8 +57,13 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+            ActivityCompat.requestPermissions(this,
+                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                    1);
+            return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
     }
@@ -82,46 +82,50 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onLocationChanged(@NonNull Location location) {
         mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         mMap.animateCamera(cameraUpdate);
 
-
-        //trzeba sprawdzic czy uzytkownik znajduje sie w/w bliskej odlegosci od punktcie/u kontrolnym/ego
-        //wyswitlic zadanie
-        //przestawic marker
-        //powtorzyc
-        //if (lokacja == mapa.punkt[i].lokacja) {
-        //  if(dojscieDoKolejnegoPunktuKontrolnego(mapa.punkt[i].zadanie)) {
-        //
-        //  }
-        //}
-
-
+        int i =0;
+        if (location.getLatitude() == mapa.pobierzPunktKontrolny(i).getWspolrzednaSzerokosciGeograficznejPunktuKontrolnego() && location.getLongitude() == mapa.pobierzPunktKontrolny(i).getWspolrzednaWysokosciGeograficznejPunktuKontrolnego()){
+            if (dojscieDoKolejnegoPunktuKontrolnego(mapa.pobierzPunktKontrolny(i).getZadanie())){
+                i++;
+                markerOptions.position(new LatLng(mapa.pobierzPunktKontrolny(i).getWspolrzednaSzerokosciGeograficznejPunktuKontrolnego(),mapa.pobierzPunktKontrolny(i).getWspolrzednaWysokosciGeograficznejPunktuKontrolnego()));
+                markerOptions.title(mapa.pobierzPunktKontrolny(i).getNazwa());
+                wskaznikNastepnegoPukntyKontrolnego.remove();
+                wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
+            }
+        }
     }
 
-//    private boolean dojscieDoKolejnegoPunktuKontrolnego(String zadanieKontrolne){
-//
-//    }
+    private boolean dojscieDoKolejnegoPunktuKontrolnego(Zadanie zadanieKontrolne){
 
-    void requestPermissions (Activity activity, String[] permissions, int requestCode){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Zezwól na dostęp do lokolizacji")
-                .setMessage("cos")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        ActivityCompat.requestPermissions(activity, permissions, requestCode);
-                    }
-                });
-        builder.create().show();
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode,
+                        permissions,
+                        grantResults);
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }

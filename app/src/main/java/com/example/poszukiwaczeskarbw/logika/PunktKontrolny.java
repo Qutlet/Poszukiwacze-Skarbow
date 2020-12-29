@@ -9,11 +9,13 @@ package com.example.poszukiwaczeskarbw.logika;
 public class PunktKontrolny {
     private double wspolrzednaSzerokosciGeograficznejPunktuKontrolnego;
     private double wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
-    private String zadanie;
+    private String nazwa;
+    private Zadanie zadanie;
 
-    public PunktKontrolny(double wspolrzednaSzerokosciGeograficznejPunktuKontrolnego, double wspolrzednaWysokosciGeograficznejPunktuKontrolnego, String zadanie) {
+    public PunktKontrolny(double wspolrzednaSzerokosciGeograficznejPunktuKontrolnego, double wspolrzednaWysokosciGeograficznejPunktuKontrolnego,String nazwa ,Zadanie zadanie) {
         this.wspolrzednaSzerokosciGeograficznejPunktuKontrolnego = wspolrzednaSzerokosciGeograficznejPunktuKontrolnego;
         this.wspolrzednaWysokosciGeograficznejPunktuKontrolnego = wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
+        this.nazwa = nazwa;
         this.zadanie = zadanie;
     }
 
@@ -33,11 +35,19 @@ public class PunktKontrolny {
         this.wspolrzednaWysokosciGeograficznejPunktuKontrolnego = wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
     }
 
-    public String getZadanie() {
+    public String getNazwa() {
+        return nazwa;
+    }
+
+    public void setNazwa(String nazwa) {
+        this.nazwa = nazwa;
+    }
+
+    public Zadanie getZadanie() {
         return zadanie;
     }
 
-    public void setZadanie(String zadanie) {
+    public void setZadanie(Zadanie zadanie) {
         this.zadanie = zadanie;
     }
 }
