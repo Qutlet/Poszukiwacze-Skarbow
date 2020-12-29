@@ -15,6 +15,8 @@ import android.widget.Button;
 
 import com.example.poszukiwaczeskarbw.logika.Baza;
 import com.example.poszukiwaczeskarbw.ui.DodajSkarb;
+import com.example.poszukiwaczeskarbw.ui.Logowanie;
+import com.example.poszukiwaczeskarbw.ui.Rejestracja;
 import com.example.poszukiwaczeskarbw.ui.SzukajSkarb;
 
 public class PoszukiwaczeSkarbow extends AppCompatActivity {
@@ -23,15 +25,21 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button button = findViewById(R.id.start);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button signIn = findViewById(R.id.Zaloguj);
+        signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intet = new Intent(getApplicationContext(), DodajSkarb.class);
-                Intent intet = new Intent(getApplicationContext(), SzukajSkarb.class);
-                //startActivity(intet);
-                Baza baza = Baza.getBaza();
-                baza.polacz();
+                Intent logIn = new Intent(getApplicationContext(), Logowanie.class);
+                startActivity(logIn);
+            }
+        });
+
+        Button signUp = findViewById(R.id.Zarejestruj);
+        signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signUp = new Intent(getApplicationContext(), Rejestracja.class);
+                startActivity(signUp);
             }
         });
     }
