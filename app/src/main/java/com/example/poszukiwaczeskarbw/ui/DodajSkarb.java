@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 24.12.20 02:06
+ * Last modified 31.12.20 02:07
  */
 
 package com.example.poszukiwaczeskarbw.ui;
@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.poszukiwaczeskarbw.R;
+import com.example.poszukiwaczeskarbw.logika.PunktKontrolny;
+import com.example.poszukiwaczeskarbw.logika.Zadanie;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,6 +43,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     public boolean flagaPunkt = false;
     public boolean flagaKoniec = false;
     ArrayList<Marker> markerList = new ArrayList<>();
+    ArrayList<PunktKontrolny> punktKontrolne = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,27 +105,30 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if (flagaStart == true) {
+                if (flagaStart) {
                     markerOptions.position(latLng);
                     markerOptions.title("Start");
                     mMap.clear();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     markerList.add(mMap.addMarker((markerOptions)));
+                    punktKontrolne.add(new PunktKontrolny(latLng,"Start",null));
                 }
 
-                if (flagaPunkt == true) {
+                if (flagaPunkt) {
                     markerOptions.position(latLng);
                     markerOptions.title("Punkt " + markerList.size());
                     //mMap.clear();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
                     markerList.add(mMap.addMarker((markerOptions)));
                 }
-                if (flagaKoniec == true) {
+                if (flagaKoniec) {
                     markerOptions.position(latLng);
                     markerOptions.title("Koniec");
                     //mMap.clear();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
                     markerList.add(mMap.addMarker((markerOptions)));
+
+                    punktKontrolne.add(new PunktKontrolny(latLng,"Koniec",new Zadanie(punktKontrolne.size()-1,0,"test",0)));
                 }
             }
 
@@ -133,4 +139,14 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         });
 
-    }}
+    }
+
+//    private ArrayList<PunktKontrolny> zapiszPunktyZMapyJakoPunktyKontrolne(){
+//        ArrayList<PunktKontrolny> punktKontrolne = new ArrayList<>();
+//        for(Marker marek : markerList){
+//            punktKontrolne.add(new PunktKontrolny(marek.getPosition().latitude,marek.getPosition().longitude,marek.getTitle(),))
+//        }
+//        return punktKontrolne;
+//    }
+
+}
