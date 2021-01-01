@@ -2,7 +2,7 @@
 <!--
   ~ Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
   ~ Copyright (c) 2020. All rights reserved
-  ~ Last modified 24.12.20 02:06
+  ~ Last modified 31.12.20 02:07
   -->
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,23 +12,42 @@
     android:layout_height="match_parent"
     tools:context=".PoszukiwaczeSkarbow">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
-        android:id="@+id/start"
+        android:id="@+id/Zaloguj"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="91dp"
-        android:layout_marginTop="118dp"
-        android:text="Button"
+        android:layout_marginStart="144dp"
+        android:layout_marginTop="140dp"
+        android:text="Zaloguj się"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Tytul" />
+
+    <TextView
+        android:id="@+id/Tytul"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="120dp"
+        android:text="Witaj poszukiwaczu skarbów!"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/Zarejestruj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="131dp"
+        android:layout_marginTop="47dp"
+        android:text="Zarejestruj się"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Zaloguj" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="53dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

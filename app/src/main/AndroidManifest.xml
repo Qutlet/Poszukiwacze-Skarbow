@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
+  ~ Copyright (c) 2020. All rights reserved
+  ~ Last modified 31.12.20 02:07
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.poszukiwaczeskarbw">
     <!--

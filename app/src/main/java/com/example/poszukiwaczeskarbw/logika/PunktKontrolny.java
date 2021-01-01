@@ -1,43 +1,55 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 28.12.20 12:25
+ * Last modified 31.12.20 02:07
  */
 
 package com.example.poszukiwaczeskarbw.logika;
 
-public class PunktKontrolny {
-    private double wspolrzednaSzerokosciGeograficznejPunktuKontrolnego;
-    private double wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
-    private String zadanie;
+import com.google.android.gms.maps.model.LatLng;
 
-    public PunktKontrolny(double wspolrzednaSzerokosciGeograficznejPunktuKontrolnego, double wspolrzednaWysokosciGeograficznejPunktuKontrolnego, String zadanie) {
-        this.wspolrzednaSzerokosciGeograficznejPunktuKontrolnego = wspolrzednaSzerokosciGeograficznejPunktuKontrolnego;
-        this.wspolrzednaWysokosciGeograficznejPunktuKontrolnego = wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
+public class PunktKontrolny {
+    private LatLng wspolrzedneGeograficznePunktuKontrolnego;
+    private String nazwa;
+    private Zadanie zadanie;
+
+    public PunktKontrolny(LatLng wspolrzedneGeograficznePunktuKontrolnego, String nazwa, Zadanie zadanie) {
+        this.wspolrzedneGeograficznePunktuKontrolnego = wspolrzedneGeograficznePunktuKontrolnego;
+        this.nazwa = nazwa;
         this.zadanie = zadanie;
     }
 
-    public double getWspolrzednaSzerokosciGeograficznejPunktuKontrolnego() {
-        return wspolrzednaSzerokosciGeograficznejPunktuKontrolnego;
+    public LatLng getWspolrzedneGeograficznePunktuKontrolnego() {
+        return wspolrzedneGeograficznePunktuKontrolnego;
     }
 
-    public void setWspolrzednaSzerokosciGeograficznejPunktuKontrolnego(double wspolrzednaSzerokosciGeograficznejPunktuKontrolnego) {
-        this.wspolrzednaSzerokosciGeograficznejPunktuKontrolnego = wspolrzednaSzerokosciGeograficznejPunktuKontrolnego;
+    public void setWspolrzedneGeograficznePunktuKontrolnego(LatLng wspolrzedneGeograficznePunktuKontrolnego) {
+        this.wspolrzedneGeograficznePunktuKontrolnego = wspolrzedneGeograficznePunktuKontrolnego;
     }
 
-    public double getWspolrzednaWysokosciGeograficznejPunktuKontrolnego() {
-        return wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
+    public String getNazwa() {
+        return nazwa;
     }
 
-    public void setWspolrzednaWysokosciGeograficznejPunktuKontrolnego(double wspolrzednaWysokosciGeograficznejPunktuKontrolnego) {
-        this.wspolrzednaWysokosciGeograficznejPunktuKontrolnego = wspolrzednaWysokosciGeograficznejPunktuKontrolnego;
+    public void setNazwa(String nazwa) {
+        this.nazwa = nazwa;
     }
 
-    public String getZadanie() {
+    public Zadanie getZadanie() {
         return zadanie;
     }
 
-    public void setZadanie(String zadanie) {
+    public void setZadanie(Zadanie zadanie) {
         this.zadanie = zadanie;
+    }
+
+    public String zapiszPunktKontrolnyJakoString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(wspolrzedneGeograficznePunktuKontrolnego)
+                .append(";")
+                .append(nazwa)
+                .append(";")
+                .append(zadanie.zapiszZadanieJakoString());
+        return stringBuilder.toString();
     }
 }

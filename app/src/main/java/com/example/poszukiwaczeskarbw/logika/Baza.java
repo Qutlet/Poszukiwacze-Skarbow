@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 24.12.20 02:08
+ * Last modified 31.12.20 02:07
  */
 
 package com.example.poszukiwaczeskarbw.logika;
@@ -27,11 +27,11 @@ public class Baza {
     /**
      * otwarcie polaczenia z baza danych
      */
-    private void polacz() {
+    public void polacz() {
         StrictMode.ThreadPolicy politka = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(politka);
         try {
-            @SuppressLint("AuthLeak") final String parametryPoloczenia = "jdbc:sqlserver://poszukiwaczeskarbow.database.windows.net:1433;database=PoszukiwaczeSkarbow;user=qutelt@poszukiwaczeskarbow;password=YmsupDsk7pmTCU9;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+            @SuppressLint("AuthLeak") final String parametryPoloczenia = "jdbc:jtds:sqlserver://poszukiwaczeskarbow.database.windows.net:1433;databaseName=PoszukiwaczeSkarbow;user=qutelt@poszukiwaczeskarbow;password=YmsupDsk7pmTCU9;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
             final String sterownikSQL = "net.sourceforge.jtds.jdbc.Driver";
             Class.forName(sterownikSQL);
             polaczenie = DriverManager.getConnection(parametryPoloczenia);
@@ -179,4 +179,26 @@ public class Baza {
             e.printStackTrace();
         }
     }
+
+    /**
+     * funcja zapisujaca utworzana mape w systemie
+     * @param nowaMapaDoZapisu - podana mapa
+     * @return true - operacja zakonczona powodzeniem, false - operacja zakonczona niepowodzeniem
+     */
+    public boolean dodajNowaMape(Mapa nowaMapaDoZapisu){
+        polacz();
+        String zapytanie = "insert into Mapy (idAutora,zapis) values (?,?)";
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
+            komunikat.setInt(1,uzytkowniczek.getIdUzytkownika());
+            komunikat.setString(2,nowaMapaDoZapisu.zapiszMapeJakoString());
+            komunikat.execute();
+            rozlacz();
+            return true;
+        } catch (SQLException e){
+            //TODO: dodac ewentualna obsluge wyjatku
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

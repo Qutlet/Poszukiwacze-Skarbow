@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 24.12.20 02:06
+ * Last modified 31.12.20 02:07
  */
 
 configurations.maybeCreate("default")

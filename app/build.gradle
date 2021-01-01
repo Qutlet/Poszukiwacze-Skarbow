@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 24.12.20 02:06
+ * Last modified 31.12.20 02:07
  */
 
 plugins {
@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.2'
     implementation 'androidx.navigation:navigation-ui:2.3.2'
+    implementation project(path: ':jtds-1.3.1')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

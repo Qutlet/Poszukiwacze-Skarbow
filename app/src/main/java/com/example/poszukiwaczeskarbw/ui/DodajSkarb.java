@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 24.12.20 02:06
+ * Last modified 31.12.20 02:07
  */
 
 package com.example.poszukiwaczeskarbw.ui;
@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.poszukiwaczeskarbw.R;
 import com.example.poszukiwaczeskarbw.logika.PunktKontrolny;
+import com.example.poszukiwaczeskarbw.logika.Zadanie;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -96,7 +97,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if (flagaStart == true) {
+                if (flagaStart) {
                     markerOptions.position(latLng);
                     markerOptions.title("Start");
                     mMap.clear();
