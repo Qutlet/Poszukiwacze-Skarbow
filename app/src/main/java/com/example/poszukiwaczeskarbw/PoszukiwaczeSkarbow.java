@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
  * Copyright (c) 2020. All rights reserved
- * Last modified 24.12.20 02:06
+ * Last modified 31.12.20 02:07
  */
 
 package com.example.poszukiwaczeskarbw;
@@ -40,6 +40,15 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signUp = new Intent(getApplicationContext(), Rejestracja.class);
                 startActivity(signUp);
+            }
+        });
+
+        Button debug = findViewById(R.id.button);
+        debug.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent debug = new Intent(getApplicationContext(), SzukajSkarb.class);
+                startActivity(debug);
             }
         });
     }
