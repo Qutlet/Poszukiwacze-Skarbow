@@ -47,7 +47,7 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
         debug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent debug = new Intent(getApplicationContext(), SzukajSkarb.class);
+                Intent debug = new Intent(getApplicationContext(), DodajSkarb.class);
                 startActivity(debug);
             }
         });
