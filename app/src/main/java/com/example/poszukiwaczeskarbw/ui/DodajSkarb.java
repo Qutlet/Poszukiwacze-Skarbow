@@ -75,7 +75,8 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                 zapisz.setVisibility(View.INVISIBLE);
                 flagaStart = false;
                 flagaPunkt = true;
-                //flagaDodajTaska = true;
+                flagaDodajTaska = true;
+                //dropdown.setVisibility(View.VISIBLE);
             }
         });
         zapisz.setOnClickListener(new View.OnClickListener() {
@@ -152,8 +153,6 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                     }
                 }
             }
-
-
             // Add a marker in Sydney and move the camera
             //LatLng sydney = new LatLng(-34, 151);
             //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").draggable(true));
