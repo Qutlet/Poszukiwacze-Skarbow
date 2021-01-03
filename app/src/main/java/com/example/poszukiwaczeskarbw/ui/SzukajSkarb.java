@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,6 +24,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.InputType;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.poszukiwaczeskarbw.R;
@@ -30,6 +33,7 @@ import com.example.poszukiwaczeskarbw.logika.Mapa;
 import com.example.poszukiwaczeskarbw.logika.PunktKontrolny;
 import com.example.poszukiwaczeskarbw.logika.Zadanie;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,20 +54,21 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
     private LocationManager locationManager;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+    private Sensor mMagnetometr;
+    private Sensor mojaBliskosc;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
     AlertDialog ff15;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mapa = new Mapa("Plan","jaki");
-        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8554,19.3930),"kurwa",new Zadanie(1,0,"sprytny",0)));
+        mapa = new Mapa("Plan","jaki","test");
+        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8554,19.3930),"Start",null));
+        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8555,19.3906),"P1",new Zadanie(1,2,"sprytny","0")));
+        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8563,19.3905),"P2",new Zadanie(2,2,"sprytny","0")));
+        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8563,19.3915),"Koniec",new Zadanie(3,2,"sprytny","0")));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_szukaj_skarb);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -72,7 +77,8 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                 (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer =
                 mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        // requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        mMagnetometr = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mojaBliskosc = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
@@ -81,6 +87,7 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, this); //co 2 sekundy czulosc 1 metr
         test.start();
+
     }
 
     @Override
@@ -91,61 +98,95 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(mapa.pobierzPunktKontrolny(0).getWspolrzedneGeograficznePunktuKontrolnego());
+            markerOptions.title("Start");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
         }
     }
     private boolean dotarlemDoPunktuKontrolego = false;
     private boolean z1 = false;
     private boolean z2 = false;
+    private boolean z3 = false;
     private int rodzajZadania = 0;
+    final int[] i = {0};
     @Override
     public void onLocationChanged(@NonNull Location location) {
         mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         mMap.animateCamera(cameraUpdate);
-        dotarlemDoPunktuKontrolego = true;
-        final int[] i = {0};
-        System.out.println("szerokosc" +
-                location.getLatitude());
-        System.out.println("dlogosc" +
-                location.getLongitude());
 
         if (czyZnajdujeSieBliskoPunktu(latLng,mapa.pobierzPunktKontrolny(i[0]).getWspolrzedneGeograficznePunktuKontrolnego())) {
-            System.out.println("102 metry!!!");
-            z1 =false;
-            rodzajZadania = mapa.pobierzPunktKontrolny(i[0]).getZadanie().getRodzajZadania();
-            ff15 = new AlertDialog.Builder(this).create();
-            final boolean[] nieRobie = {false};
-            ff15.setTitle("Kolejny punkt kontrolny");
-            ff15.setMessage("Gratulacje poszukiwaczu dotarłeś do kolejnego punktu kontrolnego, aby kontynuować swoją przygode musisz wykonac następujace zadanie: " +
-                    mapa.pobierzPunktKontrolny(i[0]).getZadanie().getTrescZadania());
-            ff15.setButton(AlertDialog.BUTTON_NEGATIVE, "Sprobuję nastepnym razem", (dialog, which) -> {
-                nieRobie[0] = true;
-                Toast.makeText(getApplicationContext(),"Anulowałeś zadanie, możesz ponowić próbe klikajac na znaczek zadania, bądz wrocic tutaj nastepnym razem",Toast.LENGTH_LONG).show();
-                ff15.dismiss();
-            });
-            ff15.setOnDismissListener(dialog -> {
-                if (!nieRobie[0]) {
-                    if (mapa.pobierzPunktKontrolny(i[0]).getNazwa().equals("Koniec")) {
-                        //todo tu jakies gowno w stylu odnalezles skarb jest nim kurwa napis "gratulacje a teraz spierdalaj :)"
-                        //todo jakies colniecie do listy map albo statystyki szuaknia czy cos
-                    } else {
-                        i[0]++;
-                        markerOptions.position(mapa.pobierzPunktKontrolny(i[0]).getWspolrzedneGeograficznePunktuKontrolnego());
-                        markerOptions.title(mapa.pobierzPunktKontrolny(i[0]).getNazwa());
-                        wskaznikNastepnegoPukntyKontrolnego.remove();
-                        wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
-                    }
+            if (i[0] == 0) {
+                ff15 = new AlertDialog.Builder(this).create();
+                ff15.setTitle("Start");
+                ff15.setMessage("Gratulacje poszukiwaczu dotarłeś na start. Teraz musisz przejść do punktu kontrolnego który pokazał ci się na mapie. Wykonuj zadania i zdobądż skarb");
+                ff15.setButton(AlertDialog.BUTTON_NEUTRAL, "Do dzieła", (dialog, which) -> ff15.dismiss());
+                ff15.show();
+                i[0]++;
+                markerOptions.position(mapa.pobierzPunktKontrolny(i[0]).getWspolrzedneGeograficznePunktuKontrolnego());
+                markerOptions.title(mapa.pobierzPunktKontrolny(i[0]).getNazwa());
+                wskaznikNastepnegoPukntyKontrolnego.remove();
+                wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
+            } else {
+                dotarlemDoPunktuKontrolego = true;
+                z1 = false;
+                rodzajZadania = mapa.pobierzPunktKontrolny(i[0]).getZadanie().getRodzajZadania();
+                ff15 = new AlertDialog.Builder(this).create();
+                final boolean[] nieRobie = {false};
+                ff15.setTitle("Kolejny punkt kontrolny");
+                ff15.setMessage("Gratulacje poszukiwaczu dotarłeś do kolejnego punktu kontrolnego, aby kontynuować swoją przygode musisz wykonac następujace zadanie: " +
+                        mapa.pobierzPunktKontrolny(i[0]).getZadanie().getTrescZadania());
+                final EditText input = new EditText(this);
+                if (mapa.pobierzPunktKontrolny(i[0]).getZadanie().getRodzajZadania() == 3) {
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    ff15.setView(input);
+                    ff15.setButton(AlertDialog.BUTTON_POSITIVE,"Sprawdź", ((dialog, which) -> {
+                        if (input.getText().toString().equals(mapa.pobierzPunktKontrolny(i[0]).getZadanie().getWynikZaliczajacy())){
+                            Toast.makeText(getApplicationContext(),"Brawo!!! to prawidłowa odpowiedź, kontynułuj swoją przygodę i odnajdz wspaniały skarb",Toast.LENGTH_LONG).show();
+                            ff15.dismiss();
+                        }
+                    }));
                 }
-            });
-            ff15.show();
+                ff15.setButton(AlertDialog.BUTTON_NEGATIVE, "Sprobuję nastepnym razem", (dialog, which) -> {
+                    nieRobie[0] = true;
+                    Toast.makeText(getApplicationContext(), "Anulowałeś zadanie, możesz ponowić próbe klikajac na znaczek zadania, bądz wrocic tutaj nastepnym razem", Toast.LENGTH_LONG).show();
+                    ff15.dismiss();
+                });
+                ff15.setOnDismissListener(dialog -> {
+                    if (!nieRobie[0]) {
+                        if (i[0] == mapa.iloscPunktowKontrolnych()-1) {
+                            AlertDialog koniec = new AlertDialog.Builder(this).create();
+                            koniec.setTitle("KONIEC");
+                            koniec.setMessage("Gratulacje poszukiwaczu dotarleś do końca. Twój skarb powinieneś znaleźć");  //todo + instrukcje czym jest i jak odnalezc skarb
+                                                                                                                            //todo dodac taka aktywnosci do klasy dodaj skarb na koniec kiedy nazywa sie mape
+                                                                                                                            //todo dodac pole do klasy mapa i zmodyfikosc metdode odczytujace zapis z bazy
+                            //todo textView'y przestawiajace statystyki szukania skarbu itp
+                            //todo ewentualna mozliwosc oceny mapy, zgloszenia autora mapy o oszustwie
+                            koniec.setButton(AlertDialog.BUTTON_NEUTRAL,"HURA!!",((dialog1, which) -> {
+                                koniec.dismiss();
+                                //todo metoda przestawiajaca mape do archiwum
+                                finish();
+                            }));
+
+                        } else {
+                            i[0]++;
+                            markerOptions.position(mapa.pobierzPunktKontrolny(i[0]).getWspolrzedneGeograficznePunktuKontrolnego());
+                            markerOptions.title(mapa.pobierzPunktKontrolny(i[0]).getNazwa());
+                            wskaznikNastepnegoPukntyKontrolnego.remove();
+                            wskaznikNastepnegoPukntyKontrolnego = mMap.addMarker(markerOptions);
+                        }
+                    }
+                });
+                ff15.show();
+            }
         }
     }
+
+    //todo przerwanie poszukiwan, info na ten temat, mozliwosc zgloszenie tworcy mapy badz samej mapy
 
     private boolean czyZnajdujeSieBliskoPunktu(LatLng P1,LatLng P2)  {
         double R = 6378137.0;
@@ -194,8 +235,12 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                 z2 = true;
             }
         }
-
-        //if (event.sensor.getType() == Sensor.TYPE_)
+        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY){
+            float x = event.values[0];
+            if (x <= 2) {
+                z3 = true;
+            }
+        }
     }
 
 
@@ -207,8 +252,9 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer,
-                SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this,mMagnetometr,SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this,mojaBliskosc,SensorManager.SENSOR_DELAY_UI);
     }
     @Override
     protected void onPause() {
@@ -223,13 +269,11 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
     private Thread test = new Thread(() -> {
         while (true) {
             synchronized (this) {
-                while (dotarlemDoPunktuKontrolego) { //czekaj na dotarcie do punktu pontrolnego
+                while (dotarlemDoPunktuKontrolego) {
                     switch (rodzajZadania) {
                         case 0:
-                            //todo jak dojdzie do punktu bedzie patrzyl czy zadanie wykonane ale nie wie ktore sprawdzac czy machanie telefonem czy magnes
-                            //todo i tu trzeba jakies cos nie wiem co elo 420
                             try {
-                                if (z1) { //sprawdzaj czy zadanie zostalo wykonane
+                                if (z1) {
                                     dotarlemDoPunktuKontrolego = false;
                                     z1 = false;
                                     ff15.dismiss();
@@ -239,10 +283,9 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                                 e.printStackTrace();
                             }
                             break;
-
                         case 1:
                             try {
-                                if (z2) { //sprawdzaj czy zadanie zostalo wykonane
+                                if (z2) {
                                     dotarlemDoPunktuKontrolego = false;
                                     z2 = false;
                                     ff15.dismiss();
@@ -252,20 +295,18 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                                 e.printStackTrace();
                             }
                             break;
-
-//                    case 2:
-//                        try {
-//                            if (z3) { //sprawdzaj czy zadanie zostalo wykonane
-//                                //System.out.println("Test[2]");//restar zmiennych
-//                                p1 = false;
-//                                z3 = false;
-//                                ff15.dismiss();
-//                                Thread.sleep(1000);
-//                            }
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                        break;
+                        case 2:
+                            try {
+                                if (z3) {
+                                    dotarlemDoPunktuKontrolego = false;
+                                    z3 = false;
+                                    ff15.dismiss();
+                                    Thread.sleep(1000);
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            break;
                     }
                 }
             }

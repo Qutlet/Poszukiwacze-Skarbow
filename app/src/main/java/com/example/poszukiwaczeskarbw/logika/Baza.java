@@ -9,12 +9,15 @@ package com.example.poszukiwaczeskarbw.logika;
 import android.annotation.SuppressLint;
 import android.os.StrictMode;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Baza {
     private Uzytkownik uzytkowniczek = Uzytkownik.getUzytkowniczek();
@@ -185,12 +188,13 @@ public class Baza {
      * @param nowaMapaDoZapisu - podana mapa
      * @return true - operacja zakonczona powodzeniem, false - operacja zakonczona niepowodzeniem
      */
-    public boolean dodajNowaMape(Mapa nowaMapaDoZapisu){
+    public boolean dodajNowaMape(Mapa nowaMapaDoZapisu, int iloscPunktowNaMapie){
         polacz();
-        String zapytanie = "insert into Mapy (idAutora,zapis) values (?,?)";
+        String zapytanie = "insert into Mapy (idAutora,zapis,iloscPunktow) values (?,?,?)";
         try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
             komunikat.setInt(1,uzytkowniczek.getIdUzytkownika());
             komunikat.setString(2,nowaMapaDoZapisu.zapiszMapeJakoString());
+            komunikat.setInt(3,iloscPunktowNaMapie);
             komunikat.execute();
             rozlacz();
             return true;
@@ -199,6 +203,67 @@ public class Baza {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public ArrayList<Mapa> pobierzMapeZBazyDanych(){
+        ArrayList<Mapa> mapy = new ArrayList<>();
+        polacz();
+        int mapa = 0;
+        int rozmiar =0;
+        String zapytanie = "select zapis,iloscPunktow from Mapy";
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)) {
+            ResultSet tablicaWynikow = komunikat.executeQuery();
+            while (tablicaWynikow.next()) {
+                mapy.add(new Mapa());
+                String[] stringi = new String[45];
+                double[] latLangi = new double[14];
+                String zapis =tablicaWynikow.getString(1);
+                int iloscPunktow = tablicaWynikow.getInt(2);
+                //imieAutora;nazwisko;nazwa;wspp1;nazwap1;nrZad,rodzZad,tresczad,wynikZad ....
+                //
+                int i =0;
+                int c=0;
+                StringBuilder budowniczy = new StringBuilder();
+                while (zapis.charAt(i) != '#'){ //dopuki nie # czyli znak konza zapisu
+                    //dopuki nie ; tworz wartosc
+                    while (zapis.charAt(i) != ';'){ //dochodi do ; i dalej petla nie idzie
+                        budowniczy.append(zapis.charAt(i));
+                    }
+                    if (zapis.charAt(i) == ';'){
+                        //jak jest ; tworzy obiekt i zeruje tworzenie
+                        stringi[rozmiar] = budowniczy.toString();
+                        budowniczy = new StringBuilder();
+                    }
+                    rozmiar++;
+                }
+                for (int j = 3; j <= 41; j=j+6) {
+                    stringi[j] = stringi[j].substring(10);
+                    stringi[j] = stringi[j].substring(0,stringi[j].length()-1);
+                    latLangi[c] = Double.parseDouble(stringi[j].split(",")[0]);
+                    c++;
+                    latLangi[c] = Double.parseDouble(stringi[j].split(",")[1]);
+                    c++;
+                }
+                mapy.add(new Mapa(stringi[0],stringi[1],stringi[2]));
+                mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[0],latLangi[1]),stringi[4],new Zadanie(Integer.parseInt(stringi[5]),Integer.parseInt(stringi[6]),stringi[7],stringi[8]))); //start
+                mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[2],latLangi[3]),stringi[10],new Zadanie(Integer.parseInt(stringi[11]),Integer.parseInt(stringi[12]),stringi[13],stringi[14])));
+                if (iloscPunktow > 2)
+                    mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[4],latLangi[5]),stringi[16],new Zadanie(Integer.parseInt(stringi[17]),Integer.parseInt(stringi[18]),stringi[19],stringi[20])));
+                if (iloscPunktow > 3)
+                    mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[6],latLangi[7]),stringi[22],new Zadanie(Integer.parseInt(stringi[23]),Integer.parseInt(stringi[24]),stringi[25],stringi[26])));
+                if (iloscPunktow > 4)
+                    mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[8],latLangi[9]),stringi[28],new Zadanie(Integer.parseInt(stringi[29]),Integer.parseInt(stringi[30]),stringi[31],stringi[32])));
+                if (iloscPunktow > 5)
+                    mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[10],latLangi[11]),stringi[34],new Zadanie(Integer.parseInt(stringi[35]),Integer.parseInt(stringi[36]),stringi[37],stringi[38])));
+                if (iloscPunktow > 6)
+                    mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[12],latLangi[13]),stringi[40],new Zadanie(Integer.parseInt(stringi[41]),Integer.parseInt(stringi[42]),stringi[43],stringi[44])));
+                mapa++;
+            }
+        } catch (SQLException e){
+            //TODO: dodac ewentualna obsluge wyjatku
+            e.printStackTrace();
+        }
+        return mapy;
     }
 
 }

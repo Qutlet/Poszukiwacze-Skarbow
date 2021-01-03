@@ -7,12 +7,12 @@
 package com.example.poszukiwaczeskarbw.logika;
 
 public class Zadanie {
-    private int numerZadania = 1;
-    private int rodzajZadania = 0;
-    private String trescZadania = "Obróc telefon 5 razy";
-    private int wynikZaliczajacy = 5;
+    private int numerZadania;
+    private int rodzajZadania;
+    private String trescZadania;
+    private String wynikZaliczajacy;
 
-    public Zadanie(int numerZadania, int rodzajZadania, String trescZadania, int wynikZaliczajacy) {
+    public Zadanie(int numerZadania, int rodzajZadania, String trescZadania, String wynikZaliczajacy) {
         this.numerZadania = numerZadania;
         this.rodzajZadania = rodzajZadania;
         this.trescZadania = trescZadania;
@@ -43,11 +43,11 @@ public class Zadanie {
         this.trescZadania = trescZadania;
     }
 
-    public int getWynikZaliczajacy() {
+    public String getWynikZaliczajacy() {
         return wynikZaliczajacy;
     }
 
-    public void setWynikZaliczajacy(int wynikZaliczajacy) {
+    public void setWynikZaliczajacy(String wynikZaliczajacy) {
         this.wynikZaliczajacy = wynikZaliczajacy;
     }
 

@@ -48,8 +48,12 @@ public class PunktKontrolny {
         stringBuilder.append(wspolrzedneGeograficznePunktuKontrolnego)
                 .append(";")
                 .append(nazwa)
-                .append(";")
-                .append(zadanie.zapiszZadanieJakoString());
+                .append(";");
+        if (zadanie == null){
+            stringBuilder.append(";;;;");
+        } else {
+            stringBuilder.append(zadanie.zapiszZadanieJakoString());
+        }
         return stringBuilder.toString();
     }
 }
