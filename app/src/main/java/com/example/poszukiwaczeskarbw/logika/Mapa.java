@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
- * Copyright (c) 2020. All rights reserved
- * Last modified 31.12.20 02:07
+ * Copyright (c) 2021. All rights reserved
+ * Last modified 03.01.21 11:59
  */
 
 package com.example.poszukiwaczeskarbw.logika;
@@ -9,18 +9,35 @@ package com.example.poszukiwaczeskarbw.logika;
 import java.util.ArrayList;
 
 public class Mapa {
+    private int _ID;
+    private int _IDAutora;
     private String imieAutora = "Poszukiwacz";
     private String nazwiskoAutora = "Skarbow";
     private String nazwa = "Mapa do skarbu Macieja";
+    private String opisSkarbu;
     private ArrayList<PunktKontrolny> punktyKontrolne = new ArrayList<>();
 
-    public Mapa(String imieAutora, String nazwiskoAutora, String nazwa) {
+    public Mapa(String imieAutora, String nazwiskoAutora, String nazwa ,String opisSkarbu) {
         this.imieAutora = imieAutora;
         this.nazwiskoAutora = nazwiskoAutora;
         this.nazwa = nazwa;
+        this.opisSkarbu = opisSkarbu;
     }
 
-    public Mapa() {
+    public int get_ID() {
+        return _ID;
+    }
+
+    public void set_ID(int _ID) {
+        this._ID = _ID;
+    }
+
+    public int get_IDAutora() {
+        return _IDAutora;
+    }
+
+    public void set_IDAutora(int _IDAutora) {
+        this._IDAutora = _IDAutora;
     }
 
     public String getImieAutora() {
@@ -49,6 +66,14 @@ public class Mapa {
 
     public void setPunktyKontrolne(ArrayList<PunktKontrolny> punktyKontrolne) {
         this.punktyKontrolne = punktyKontrolne;
+    }
+
+    public String getOpisSkarbu() {
+        return opisSkarbu;
+    }
+
+    public void setOpisSkarbu(String opisSkarbu) {
+        this.opisSkarbu = opisSkarbu;
     }
 
     public int iloscPunktowKontrolnych() {
