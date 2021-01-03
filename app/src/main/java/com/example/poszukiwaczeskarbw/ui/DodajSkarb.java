@@ -34,6 +34,8 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     public boolean flagaPunkt = false;
     public boolean flagaKoniec = false;
     public boolean flagaDodajTaska = false;
+    LatLng[] latLangi = new LatLng[6];
+    int[] rodzajeZadan = new int[6];
     ArrayList<Marker> markerList = new ArrayList<>();
     ArrayList<PunktKontrolny> punktKontrolne = new ArrayList<>();
     Spinner dropdown;
@@ -134,11 +136,13 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         markerList.add(mMap.addMarker((markerOptions)));
                         if (flagaDodajTaska) {
                             dropdown.setVisibility(View.VISIBLE);
-                            int numerek = markerList.size() - 1;
+                            //int numerek = markerList.size() - 1;
                             String r_Zadania = dropdown.getSelectedItem().toString();
                             int rodzaj_Zadania = Integer.parseInt(r_Zadania);
+                            rodzajeZadan[markerList.size()-2] = rodzaj_Zadania;
+                            latLangi[markerList.size()-2] = latLng;
                             System.out.println(rodzaj_Zadania);
-                            punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(punktKontrolne.size() - 1,rodzaj_Zadania , "test" + numerek, 0)));
+                            //punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(punktKontrolne.size() - 1,rodzaj_Zadania , "test" + numerek, "tak")));
                         }
                     }
                 }
@@ -146,10 +150,31 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                     if (markerList.size() < 7) {
                         markerOptions.position(latLng);
                         markerOptions.title("Koniec");
+                        dropdown.setVisibility(View.INVISIBLE);
                         //mMap.clear();
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
                         markerList.add(mMap.addMarker((markerOptions)));
-                        punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(punktKontrolne.size() - 1, 0, "test", 0)));
+                        String r_Zadania = dropdown.getSelectedItem().toString();
+                        int rodzaj_Zadania = Integer.parseInt(r_Zadania);
+                        rodzajeZadan[5] = rodzaj_Zadania;
+//                        System.out.println("chuj");
+//                        System.out.println(rodzajeZadan[0]);
+//                        System.out.println(rodzajeZadan[1]);
+//                        System.out.println(rodzajeZadan[2]);
+//                        System.out.println(rodzajeZadan[3]);
+//                        System.out.println(rodzajeZadan[4]);
+//                        System.out.println(rodzajeZadan[5]);
+//                        System.out.println("lat chuj leng chuj");
+//                        System.out.println(latLangi[0]);
+//                        System.out.println(latLangi[1]);
+//                        System.out.println(latLangi[2]);
+//                        System.out.println(latLangi[3]);
+//                        System.out.println(latLangi[4]);
+                        //punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(punktKontrolne.size() - 1, 0, "test", "tak")));
+                        //Tu sie dzieje dodawanie punktow
+                        for(int i=0; i<markerList.size()-2;i++){
+                            punktKontrolne.add(new PunktKontrolny(latLangi[i], "Punkt" + i+1, new Zadanie( i+1,rodzajeZadan[i+1], "test" + i+1, "tak")));
+                        }
                     }
                 }
             }
