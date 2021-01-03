@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
- * Copyright (c) 2020. All rights reserved
- * Last modified 31.12.20 02:07
+ * Copyright (c) 2021. All rights reserved
+ * Last modified 03.01.21 15:06
  */
 
 package com.example.poszukiwaczeskarbw.logika;
@@ -188,13 +188,14 @@ public class Baza {
      * @param nowaMapaDoZapisu - podana mapa
      * @return true - operacja zakonczona powodzeniem, false - operacja zakonczona niepowodzeniem
      */
-    public boolean dodajNowaMape(Mapa nowaMapaDoZapisu, int iloscPunktowNaMapie){
+    public boolean dodajNowaMape(Mapa nowaMapaDoZapisu){
         polacz();
-        String zapytanie = "insert into Mapy (idAutora,zapis,iloscPunktow) values (?,?,?)";
+        String zapytanie = "insert into Mapy (idAutora,zapis,iloscPunktow,opisSkarbu) values (?,?,?,?)";
         try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
             komunikat.setInt(1,uzytkowniczek.getIdUzytkownika());
             komunikat.setString(2,nowaMapaDoZapisu.zapiszMapeJakoString());
-            komunikat.setInt(3,iloscPunktowNaMapie);
+            komunikat.setInt(3,nowaMapaDoZapisu.iloscPunktowKontrolnych());
+            komunikat.setString(4,nowaMapaDoZapisu.getOpisSkarbu());
             komunikat.execute();
             rozlacz();
             return true;
@@ -210,15 +211,17 @@ public class Baza {
         polacz();
         int mapa = 0;
         int rozmiar =0;
-        String zapytanie = "select zapis,iloscPunktow from Mapy";
+        String zapytanie = "select idMapy,idAutora,zapis,iloscPunktow,opisSkarbu from Mapy";
         try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)) {
             ResultSet tablicaWynikow = komunikat.executeQuery();
             while (tablicaWynikow.next()) {
-                mapy.add(new Mapa());
                 String[] stringi = new String[45];
                 double[] latLangi = new double[14];
-                String zapis =tablicaWynikow.getString(1);
-                int iloscPunktow = tablicaWynikow.getInt(2);
+                int _ID = tablicaWynikow.getInt(1);
+                int _IDA = tablicaWynikow.getInt(2);
+                String zapis =tablicaWynikow.getString(3);
+                int iloscPunktow = tablicaWynikow.getInt(4);
+                String opisSkarbu = tablicaWynikow.getString(5);
                 //imieAutora;nazwisko;nazwa;wspp1;nazwap1;nrZad,rodzZad,tresczad,wynikZad ....
                 //
                 int i =0;
@@ -244,7 +247,9 @@ public class Baza {
                     latLangi[c] = Double.parseDouble(stringi[j].split(",")[1]);
                     c++;
                 }
-                mapy.add(new Mapa(stringi[0],stringi[1],stringi[2]));
+                mapy.add(new Mapa(stringi[0],stringi[1],stringi[2],opisSkarbu));
+                mapy.get(mapa).set_ID(_ID);
+                mapy.get(mapa).set_IDAutora(_IDA);
                 mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[0],latLangi[1]),stringi[4],new Zadanie(Integer.parseInt(stringi[5]),Integer.parseInt(stringi[6]),stringi[7],stringi[8]))); //start
                 mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[2],latLangi[3]),stringi[10],new Zadanie(Integer.parseInt(stringi[11]),Integer.parseInt(stringi[12]),stringi[13],stringi[14])));
                 if (iloscPunktow > 2)
@@ -264,6 +269,47 @@ public class Baza {
             e.printStackTrace();
         }
         return mapy;
+    }
+
+    public void przeniesMapeDoArchiwum(Mapa ukonczonaMapa){
+        polacz();
+        String zapytanie = "insert into ArchiwumMap (idMapy,idAutora,zapis,iloscPunktow,opisSkarbu,idGracza) values (?,?,?,?,?,?)";
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
+            komunikat.setInt(1,ukonczonaMapa.get_ID());
+            komunikat.setInt(2,ukonczonaMapa.get_IDAutora());
+            komunikat.setString(3,ukonczonaMapa.zapiszMapeJakoString());
+            komunikat.setInt(4,ukonczonaMapa.iloscPunktowKontrolnych());
+            komunikat.setString(5,ukonczonaMapa.getOpisSkarbu());
+            komunikat.setInt(6,uzytkowniczek.getIdUzytkownika());
+            komunikat.execute();
+        } catch (SQLException e){
+            //TODO: dodac ewentualna obsluge wyjatku
+            e.printStackTrace();
+        }
+        zapytanie = "delete from Mapy where idMapy =" + ukonczonaMapa.get_ID();
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
+            komunikat.execute();
+        } catch (SQLException e){
+            //TODO: dodac ewentualna obsluge wyjatku
+            e.printStackTrace();
+        }
+        rozlacz();
+    }
+
+    public void zglosUzytkownika(int _IDAutora, String opisZgloszenia, int _IDMapy){
+        polacz();
+        String zapytanie = "insert into Zgloszenia (idAutoraMapy,idMapy,idZglaszajacego,opisZgloszenia) values (?,?,?,?)";
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
+            komunikat.setInt(1,_IDAutora);
+            komunikat.setInt(2,_IDMapy);
+            komunikat.setInt(3,uzytkowniczek.getIdUzytkownika());
+            komunikat.setString(4,opisZgloszenia);
+            komunikat.execute();
+        } catch (SQLException e){
+            //TODO: dodac ewentualna obsluge wyjatku
+            e.printStackTrace();
+        }
+        rozlacz();
     }
 
 }

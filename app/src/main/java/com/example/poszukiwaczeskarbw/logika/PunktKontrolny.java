@@ -1,7 +1,7 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
- * Copyright (c) 2020. All rights reserved
- * Last modified 31.12.20 02:07
+ * Copyright (c) 2021. All rights reserved
+ * Last modified 03.01.21 12:00
  */
 
 package com.example.poszukiwaczeskarbw.logika;
