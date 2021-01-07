@@ -6,9 +6,10 @@
 
 package com.example.poszukiwaczeskarbw.logika;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Mapa {
+public class Mapa implements Serializable {
     private int _ID;
     private int _IDAutora;
     private String imieAutora = "Poszukiwacz";

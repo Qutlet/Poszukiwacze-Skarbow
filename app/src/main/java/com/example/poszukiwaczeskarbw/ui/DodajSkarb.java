@@ -58,7 +58,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
         //get the spinner from the xml.
         dropdown = findViewById(R.id.spinner1);
         //create a list of items for the spinner.
-        String[] items = new String[]{"0", "1", "2"};
+        String[] items = new String[]{"0", "1", "2","3"};
         //create an adapter to describe how the items are displayed, adapters are used in several places in android.
         //There are multiple variations of this, but this is the basic variant.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -150,20 +150,14 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                     if (markerList.size() < 7) {
                         markerOptions.position(latLng);
                         markerOptions.title("Koniec");
-                        dropdown.setVisibility(View.INVISIBLE);
+                        //dropdown.setVisibility(View.INVISIBLE);
                         //mMap.clear();
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
                         markerList.add(mMap.addMarker((markerOptions)));
                         String r_Zadania = dropdown.getSelectedItem().toString();
                         int rodzaj_Zadania = Integer.parseInt(r_Zadania);
                         rodzajeZadan[5] = rodzaj_Zadania;
-//                        System.out.println("chuj");
-//                        System.out.println(rodzajeZadan[0]);
-//                        System.out.println(rodzajeZadan[1]);
-//                        System.out.println(rodzajeZadan[2]);
-//                        System.out.println(rodzajeZadan[3]);
-//                        System.out.println(rodzajeZadan[4]);
-//                        System.out.println(rodzajeZadan[5]);
+
 //                        System.out.println("lat chuj leng chuj");
 //                        System.out.println(latLangi[0]);
 //                        System.out.println(latLangi[1]);
