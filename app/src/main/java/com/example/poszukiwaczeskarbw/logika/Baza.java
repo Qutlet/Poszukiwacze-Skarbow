@@ -210,11 +210,12 @@ public class Baza {
         ArrayList<Mapa> mapy = new ArrayList<>();
         polacz();
         int mapa = 0;
-        int rozmiar =0;
+
         String zapytanie = "select idMapy,idAutora,zapis,iloscPunktow,opisSkarbu from Mapy";
         try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)) {
             ResultSet tablicaWynikow = komunikat.executeQuery();
             while (tablicaWynikow.next()) {
+                int rozmiar =0;
                 String[] stringi = new String[45];
                 double[] latLangi = new double[14];
                 int _ID = tablicaWynikow.getInt(1);
@@ -237,7 +238,8 @@ public class Baza {
                         stringi[rozmiar] = budowniczy.toString();
                         budowniczy = new StringBuilder();
                         System.out.println(stringi[rozmiar]);
-                        rozmiar++;
+                        if (zapis.charAt(i+1) != '#')
+                            rozmiar++;
                     }
                     i++;
                 }

@@ -16,6 +16,7 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.example.poszukiwaczeskarbw.R;
@@ -38,8 +39,11 @@ public class ListaSkarbow extends AppCompatActivity {
         setContentView(R.layout.activity_lista_skarbow);
         mapas = b.pobierzMapeZBazyDanych();
         ListView listaMap = findViewById(R.id.id45);
-        StableArrayAdapter adapter = new StableArrayAdapter(this,R.layout.maplistitem, mapas);
+        //ListView listaMap2 = findViewById(R.id.id45);
+        StableArrayAdapter adapter = new StableArrayAdapter(this,R.layout.maplistitem,R.id.firstLine, mapas);
+        //StableArrayAdapter adapter2 = new StableArrayAdapter(this,R.layout.maplistitem,R.id.secondLine, mapas);
         listaMap.setAdapter(adapter);
+        //listaMap2.setAdapter(adapter2);
         listaMap.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -59,9 +63,9 @@ public class ListaSkarbow extends AppCompatActivity {
 
         HashMap<Mapa, Integer> mIdMap = new HashMap<Mapa, Integer>();
 
-        public StableArrayAdapter(Context context, int textViewResourceId,
+        public StableArrayAdapter(Context context, int layoutResourceId,int textViewResourceId,
                                   ArrayList<Mapa> objects) {
-            super(context, textViewResourceId, objects);
+            super(context, layoutResourceId,textViewResourceId, objects);
             for (int i = 0; i < objects.size(); ++i) {
                 mIdMap.put(objects.get(i), objects.get(i).get_ID());
             }
