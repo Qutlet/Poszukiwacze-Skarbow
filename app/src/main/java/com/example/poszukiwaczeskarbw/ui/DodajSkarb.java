@@ -6,7 +6,6 @@
 
 package com.example.poszukiwaczeskarbw.ui;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,11 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.example.poszukiwaczeskarbw.logika.Baza;
-
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.poszukiwaczeskarbw.R;
+import com.example.poszukiwaczeskarbw.logika.Baza;
 import com.example.poszukiwaczeskarbw.logika.Mapa;
 import com.example.poszukiwaczeskarbw.logika.PunktKontrolny;
 import com.example.poszukiwaczeskarbw.logika.Uzytkownik;
@@ -31,18 +29,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 
 public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private static Baza bazunia = new Baza();
+    private static final Baza bazunia = new Baza();
     public boolean flagaStart = true;
     public boolean flagaPunkt = false;
     public boolean flagaKoniec = false;
     public boolean flagaDodajTaska = false;
     public boolean flagatekst = false;
+    public boolean flagatekst1 = false;
     LatLng[] latLangi = new LatLng[6];
     int[] rodzajeZadan = new int[6];
     ArrayList<Marker> markerList = new ArrayList<>();
@@ -51,7 +50,10 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     Spinner dropdown;
     EditText pytanie;
     EditText odpowiedz;
-    Button jp100;
+    EditText nazwaMapy;
+    EditText gratulacje;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,16 +67,17 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
         //Button punkt = findViewById(R.id.punkt);
         Button koniec = findViewById(R.id.koniec);
         Button zapisz = findViewById(R.id.zapisz);
-        jp100 = findViewById(R.id.button3);
-        jp100.setVisibility(View.INVISIBLE);
-        pytanie= (EditText) findViewById(R.id.trescPytaniaW);
+
+        pytanie = (EditText) findViewById(R.id.trescPytaniaW);
         String pytaniee = pytanie.getText().toString();
-        odpowiedz= (EditText) findViewById(R.id.odpowiedzW);
+        odpowiedz = (EditText) findViewById(R.id.odpowiedzW);
         String odpowiedzz = odpowiedz.getText().toString();
+        nazwaMapy = (EditText) findViewById(R.id.nazwaMapy);
+        gratulacje =(EditText) findViewById(R.id.nazwaMapy3);
+        gratulacje.setVisibility(View.INVISIBLE);
         pytanie.setVisibility(View.INVISIBLE);
         odpowiedz.setVisibility(View.INVISIBLE);
-
-
+        nazwaMapy.setVisibility(View.INVISIBLE);
         //get the spinner from the xml.
         dropdown = findViewById(R.id.spinner1);
         //create a list of items for the spinner.
@@ -87,12 +90,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
         dropdown.setVisibility(View.INVISIBLE);
 
 
-        jp100.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flagatekst = true;
-            }
-        });
+
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +111,9 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
             public void onClick(View v) {
                 onMapReady(mMap);
                 flagaKoniec = false;
-                Mapa mapa = new Mapa(uzytkownik.getImie(),uzytkownik.getNazwisko(),"Test","czteropak harnasia lezy pod drzewnem");
+                String strinzek = nazwaMapy.getText().toString();
+                String strinzek1 = gratulacje.getText().toString();
+                Mapa mapa = new Mapa(uzytkownik.getImie(), uzytkownik.getNazwisko(), strinzek, strinzek1);
                 mapa.setPunktyKontrolne(punktKontrolne);
                 bazunia.dodajNowaMape(mapa);
             }
@@ -124,9 +124,12 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                 onMapReady(mMap);
                 flagaPunkt = false;
                 flagaKoniec = true;
+                dropdown.setVisibility(View.INVISIBLE);
                 zapisz.setVisibility(View.VISIBLE);
                 //punkt.setVisibility(View.INVISIBLE);
                 koniec.setVisibility(View.INVISIBLE);
+                nazwaMapy.setVisibility(View.VISIBLE);
+                gratulacje.setVisibility(View.VISIBLE);
             }
         });
 //        punkt.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +147,15 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Button jp100;
+        Button jp101;
+        jp101 = findViewById(R.id.button4);
+        jp101.setVisibility(View.INVISIBLE);
+        jp100 = findViewById(R.id.button3);
+        jp100.setVisibility(View.INVISIBLE);
+
+
+
         MarkerOptions markerOptions = new MarkerOptions();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -154,7 +166,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                     mMap.clear();
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     markerList.add(mMap.addMarker((markerOptions)));
-                    punktKontrolne.add(new PunktKontrolny(latLng, "Start", new Zadanie(99,0,"start","start")));
+                    punktKontrolne.add(new PunktKontrolny(latLng, "Start", new Zadanie(99, 0, "start", "start")));
                 }
 
                 if (flagaPunkt) {
@@ -168,24 +180,37 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         markerList.add(mMap.addMarker((markerOptions)));
                         int numerek = markerList.size() - 1;
                         if (flagaDodajTaska) {
+                            jp100.setVisibility(View.INVISIBLE);
                             dropdown.setVisibility(View.VISIBLE);
                             String r_Zadania = dropdown.getSelectedItem().toString();
                             int rodzaj_Zadania = Integer.parseInt(r_Zadania);
                             if (rodzaj_Zadania != 3) {
-                                rodzajeZadan[markerList.size() - 2] = rodzaj_Zadania;
-                                latLangi[markerList.size() - 2] = latLng;
+                                //rodzajeZadan[markerList.size() - 2] = rodzaj_Zadania;
+                                //latLangi[markerList.size() - 2] = latLng;
                                 System.out.println(rodzaj_Zadania);
-                                punktKontrolne.add(new PunktKontrolny(latLng,"Punkt"+numerek,new Zadanie(numerek,rodzaj_Zadania,"test"+numerek, "test"+numerek)));
-                            }
-                            else{
-                                pytanie.setVisibility(View.VISIBLE);
-                                odpowiedz.setVisibility(View.VISIBLE);
-                                jp100.setVisibility(View.VISIBLE);
-                                if (flagatekst) {
-                                    String pytaniee = pytanie.getText().toString();
-                                    String odpowiedzz = odpowiedz.getText().toString();
-                                    punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, pytaniee, odpowiedzz)));
-                                }
+                                punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, "test" + numerek, "test" + numerek)));
+                            } else {
+                                jp101.setVisibility(View.VISIBLE);
+                                jp101.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        jp100.setVisibility(View.VISIBLE);
+                                        pytanie.setVisibility(View.VISIBLE);
+                                        odpowiedz.setVisibility(View.VISIBLE);
+                                        jp101.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+                                jp100.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String pytaniee = pytanie.getText().toString();
+                                        String odpowiedzz = odpowiedz.getText().toString();
+                                        punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, pytaniee, odpowiedzz)));
+                                        pytanie.setVisibility(View.INVISIBLE);
+                                        odpowiedz.setVisibility(View.INVISIBLE);
+                                        jp100.setVisibility(View.INVISIBLE);
+                                    }
+                                });
                             }
                         }
                     }
