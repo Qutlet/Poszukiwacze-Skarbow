@@ -271,6 +271,17 @@ public class Baza {
         return mapy;
     }
 
+    public void usunUzytkownika(String email){
+        polacz();
+        String zapytanie = "delete from Uzytkownicy where email = '" + email + "'";
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)){
+            komunikat.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        rozlacz();
+    }
+
     public void przeniesMapeDoArchiwum(Mapa ukonczonaMapa){
         polacz();
         String zapytanie = "insert into ArchiwumMap (idMapy,idAutora,zapis,iloscPunktow,opisSkarbu,idGracza) values (?,?,?,?,?,?)";

@@ -11,7 +11,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Logowanie">
+    tools:context=".ui.Logowanie"
+    android:background="@drawable/tlo">
 
     <EditText
         android:id="@+id/email"
