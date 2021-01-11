@@ -1,20 +1,18 @@
 /*
  * Created by Maciej Bigos & Jan Stawiński & Michalina Olczyk
- * Copyright (c) 2020. All rights reserved
- * Last modified 31.12.20 02:07
+ * Copyright (c) 2021. All rights reserved
+ * Last modified 03.01.21 11:16
  */
 
 package com.example.poszukiwaczeskarbw;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.poszukiwaczeskarbw.logika.Baza;
-import com.example.poszukiwaczeskarbw.ui.DodajSkarb;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.poszukiwaczeskarbw.ui.Logowanie;
 import com.example.poszukiwaczeskarbw.ui.Rejestracja;
 import com.example.poszukiwaczeskarbw.ui.SzukajSkarb;
@@ -47,7 +45,8 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
         debug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent debug = new Intent(getApplicationContext(), DodajSkarb.class);
+                Intent debug = new Intent(getApplicationContext(), SzukajSkarb.class);
+                //Intent debug = new Intent(getApplicationContext(), DodajSkarb.class);
                 startActivity(debug);
             }
         });

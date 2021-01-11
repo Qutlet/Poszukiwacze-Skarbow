@@ -20,7 +20,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,12 +62,9 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mapa = new Mapa("Plan","jaki","test","test");
-        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8554,19.3930),"Start",null));
-        mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8555,19.3906),"P1",new Zadanie(1,2,"sprytny","0")));
-        //mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8563,19.3905),"P2",new Zadanie(2,1,"sprytny","0")));
-        //mapa.dodajPunktKontrolny(new PunktKontrolny(new LatLng(51.8563,19.3915),"Koniec",new Zadanie(3,0,"sprytny","0")));
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        mapa = (Mapa) bundle.get("mapa");
         setContentView(R.layout.activity_szukaj_skarb);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -84,7 +83,7 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, this); //co 2 sekundy czulosc 1 metr
-        test.start();
+        zadania.start();
 
     }
 
@@ -184,7 +183,22 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                                 zgloszenie.setMessage("Opisz dlaczego chcesz zgłośić tego użytkownika");
                                 final EditText input2 = new EditText(this);
                                 input2.setInputType(InputType.TYPE_CLASS_TEXT);
-                                zgloszenie.setView(input2);
+                                final EditText input3 = new EditText(this);
+                                input2.setInputType(InputType.TYPE_CLASS_TEXT);
+                                final EditText input4 = new EditText(this);
+                                input2.setInputType(InputType.TYPE_CLASS_TEXT);
+//                                zgloszenie.setView(input2);
+//                                zgloszenie.setView(input3);
+//                                zgloszenie.setView(input4);
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                                zgloszenie.addContentView(input2,layoutParams);
+//                                zgloszenie.addContentView(input3,layoutParams);
+//                                zgloszenie.addContentView(input4,layoutParams);
+                                LinearLayout layout = new LinearLayout(this);
+                                layout.addView(input2);
+                                layout.addView(input3);
+                                layout.addView(input4);
+                                zgloszenie.setView(layout);
                                 zgloszenie.setButton(AlertDialog.BUTTON_NEGATIVE,"Zgłoś",(dialog2, which1) -> {
                                     baza.zglosUzytkownika(mapa.get_IDAutora(),input2.getText().toString(),mapa.get_ID());
                                     zgloszenie.dismiss();
@@ -194,7 +208,7 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                             koniec.setButton(AlertDialog.BUTTON_NEUTRAL,"HURA!!",((dialog1, which) -> {
                                 koniec.dismiss();
                                 baza.przeniesMapeDoArchiwum(mapa);
-                                finish();
+                                killActivity();
                             }));
                             koniec.show();
                         } else {
@@ -211,9 +225,45 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-    //todo przerwanie poszukiwan, info na ten temat, mozliwosc zgloszenie tworcy mapy badz samej mapy
+    private void killActivity() {
+        if(zadania.isAlive()) {
+            zadania.interrupt();
+        }
+        finish();
+    }
 
-    private double odlegloscMiedzyPunktami(LatLng P1,LatLng P2)  {
+    //todo przerwanie poszukiwan, info na ten temat, mozliwosc zgloszenie tworcy mapy badz samej mapy
+    @Override
+    public void onBackPressed() {
+        AlertDialog przerwanie = new AlertDialog.Builder(this).create();
+        przerwanie.setTitle("Czy na pewno chcesz przerwac poszukiwania");
+        przerwanie.setMessage("Wciśnij tak aby opuscic mape, bądź anuluj aby kontynuowac poszukiwania, aby zgłosić uzytkownika wciśnij Zgłoś");
+        przerwanie.setButton(AlertDialog.BUTTON_NEGATIVE,"Anuluj",(dialog, which) -> {
+            przerwanie.dismiss();
+        });
+        przerwanie.setButton(AlertDialog.BUTTON_POSITIVE,"Tak",(dialog, which) -> {
+            przerwanie.dismiss();
+            killActivity();
+        });
+        przerwanie.setButton(AlertDialog.BUTTON_NEUTRAL,"Zgłoś",(dialog, which) -> {
+            AlertDialog zgloszenie = new AlertDialog.Builder(this).create();
+            zgloszenie.setTitle("Zgłoś twórce mapy");
+            zgloszenie.setMessage("Opisz dlaczego chcesz zgłośić tego użytkownika");
+            final EditText input2 = new EditText(this);
+            input2.setInputType(InputType.TYPE_CLASS_TEXT);
+            zgloszenie.setView(input2);
+            zgloszenie.setButton(AlertDialog.BUTTON_NEGATIVE,"Zgłoś",(dialog2, which1) -> {
+                baza.zglosUzytkownika(mapa.get_IDAutora(),input2.getText().toString(),mapa.get_ID());
+                zgloszenie.dismiss();
+            });
+            zgloszenie.show();
+        });
+        przerwanie.show();
+    }
+
+
+
+    private double odlegloscMiedzyPunktami(LatLng P1, LatLng P2)  {
         double R = 6378137.0;
         double odlegloscE = Math.toRadians(P2.latitude-P1.latitude);
         double odlegloscN = Math.toRadians(P2.longitude-P1.longitude);
@@ -294,10 +344,16 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
         super.onDestroy();
     }
 
-    private Thread test = new Thread(() -> {
+    private Thread zadania = new Thread(() -> {
         while (true) {
             synchronized (this) {
-                //System.out.println(dotarlemDoPunktuKontrolego + "   " + rodzajZadania + "    " + z1 + "  " + z2 + "   " + z3);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    //Logger.getLogger(SzukajSkarb.class.getName()).log(Level.SEVERE, null, e);
+                    Thread.currentThread().interrupt();
+                    return;
+                }
                 while (dotarlemDoPunktuKontrolego) {
                     switch (rodzajZadania) {
                         case 0:
@@ -309,7 +365,9 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                                     Thread.sleep(1000);
                                 }
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                //Logger.getLogger(SzukajSkarb.class.getName()).log(Level.SEVERE, null, e);
+                                Thread.currentThread().interrupt();
+                                return;
                             }
                             break;
                         case 1:
@@ -321,7 +379,9 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                                     Thread.sleep(1000);
                                 }
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                //Logger.getLogger(SzukajSkarb.class.getName()).log(Level.SEVERE, null, e);
+                                Thread.currentThread().interrupt();
+                                return;
                             }
                             break;
                         case 2:
@@ -333,7 +393,9 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
                                     Thread.sleep(1000);
                                 }
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                //Logger.getLogger(SzukajSkarb.class.getName()).log(Level.SEVERE, null, e);
+                                Thread.currentThread().interrupt();
+                                return;
                             }
                             break;
                     }

@@ -210,11 +210,12 @@ public class Baza {
         ArrayList<Mapa> mapy = new ArrayList<>();
         polacz();
         int mapa = 0;
-        int rozmiar =0;
+
         String zapytanie = "select idMapy,idAutora,zapis,iloscPunktow,opisSkarbu from Mapy";
         try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)) {
             ResultSet tablicaWynikow = komunikat.executeQuery();
             while (tablicaWynikow.next()) {
+                int rozmiar =0;
                 String[] stringi = new String[45];
                 double[] latLangi = new double[14];
                 int _ID = tablicaWynikow.getInt(1);
@@ -229,17 +230,21 @@ public class Baza {
                 StringBuilder budowniczy = new StringBuilder();
                 while (zapis.charAt(i) != '#'){ //dopuki nie # czyli znak konza zapisu
                     //dopuki nie ; tworz wartosc
-                    while (zapis.charAt(i) != ';'){ //dochodi do ; i dalej petla nie idzie
+                    if (zapis.charAt(i) != ';'){ //dochodi do ; i dalej petla nie idzie
                         budowniczy.append(zapis.charAt(i));
                     }
                     if (zapis.charAt(i) == ';'){
                         //jak jest ; tworzy obiekt i zeruje tworzenie
                         stringi[rozmiar] = budowniczy.toString();
                         budowniczy = new StringBuilder();
+                        System.out.println(stringi[rozmiar]);
+                        if (zapis.charAt(i+1) != '#')
+                            rozmiar++;
                     }
-                    rozmiar++;
+                    i++;
                 }
                 for (int j = 3; j <= 41; j=j+6) {
+                    System.out.println(j);
                     stringi[j] = stringi[j].substring(10);
                     stringi[j] = stringi[j].substring(0,stringi[j].length()-1);
                     latLangi[c] = Double.parseDouble(stringi[j].split(",")[0]);

@@ -28,8 +28,8 @@ public class Wybor extends AppCompatActivity {
         });
         Button szukaj = findViewById(R.id.button2);
         szukaj.setOnClickListener(V->{
-            Intent szukajSkarbu = new Intent(getApplicationContext(), SzukajSkarb.class);
-            startActivity(szukajSkarbu);
+            Intent lista = new Intent(getApplicationContext(), ListaSkarbow.class);
+            startActivity(lista);
         });
         ImageButton profil = findViewById(R.id.profil);
         profil.setOnClickListener(V->{
