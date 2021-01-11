@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.poszukiwaczeskarbw.R;
 
@@ -29,6 +30,16 @@ public class Wybor extends AppCompatActivity {
         szukaj.setOnClickListener(V->{
             Intent szukajSkarbu = new Intent(getApplicationContext(), SzukajSkarb.class);
             startActivity(szukajSkarbu);
+        });
+        ImageButton profil = findViewById(R.id.profil);
+        profil.setOnClickListener(V->{
+            Intent pokazProfil = new Intent(getApplicationContext(), ProfilUzytkownika.class);
+            startActivity(pokazProfil);
+        });
+        Button info = findViewById(R.id.info);
+        info.setOnClickListener(V->{
+            Intent pokazInfo = new Intent(getApplicationContext(), Info.class);
+            startActivity(pokazInfo);
         });
     }
 }

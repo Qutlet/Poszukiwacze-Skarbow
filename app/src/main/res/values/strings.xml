@@ -8,4 +8,5 @@
     <string name="app_name">Poszukiwacze Skarbów</string>
     <string name="title_activity_dodaj_skarb">Map</string>
     <string name="title_activity_szukaj_skarb">Map</string>
+    <string name="info1">Aplikacja ta służy do poszukiwania skarbów ukrytych przez innych użytkowników. Możesz stworzyć własną mapę klikając w przycisk "dodaj mapę" lub wyszukać skarbu klikając w "szukaj skarbu".</string>
 </resources>
