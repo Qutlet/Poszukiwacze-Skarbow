@@ -116,6 +116,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                 Mapa mapa = new Mapa(uzytkownik.getImie(), uzytkownik.getNazwisko(), strinzek, strinzek1);
                 mapa.setPunktyKontrolne(punktKontrolne);
                 bazunia.dodajNowaMape(mapa);
+                finish();
             }
         });
         koniec.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +165,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                     markerOptions.position(latLng);
                     markerOptions.title("Start");
                     mMap.clear();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                     markerList.add(mMap.addMarker((markerOptions)));
                     punktKontrolne.add(new PunktKontrolny(latLng, "Start", new Zadanie(99, 0, "start", "start")));
                 }
@@ -176,7 +177,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         markerOptions.position(latLng);
                         markerOptions.title("Punkt " + markerList.size());
                         //mMap.clear();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                         markerList.add(mMap.addMarker((markerOptions)));
                         int numerek = markerList.size() - 1;
                         if (flagaDodajTaska) {
@@ -208,6 +209,8 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                                         punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, pytaniee, odpowiedzz)));
                                         pytanie.setVisibility(View.INVISIBLE);
                                         odpowiedz.setVisibility(View.INVISIBLE);
+                                        pytanie.setText("Pytanie");
+                                        odpowiedz.setText("Odpowiedź");
                                         jp100.setVisibility(View.INVISIBLE);
                                     }
                                 });
@@ -221,7 +224,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         markerOptions.title("Koniec");
                         //dropdown.setVisibility(View.INVISIBLE);
                         //mMap.clear();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                         markerList.add(mMap.addMarker((markerOptions)));
                         //String r_Zadania = dropdown.getSelectedItem().toString();
                         //int rodzaj_Zadania = Integer.parseInt(r_Zadania);
