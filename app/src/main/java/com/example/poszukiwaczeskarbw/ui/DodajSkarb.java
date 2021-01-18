@@ -52,6 +52,8 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     EditText odpowiedz;
     EditText nazwaMapy;
     EditText gratulacje;
+    Button jp100;
+    Button jp101;
 
 
     @Override
@@ -67,6 +69,10 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
         //Button punkt = findViewById(R.id.punkt);
         Button koniec = findViewById(R.id.koniec);
         Button zapisz = findViewById(R.id.zapisz);
+        jp101 = findViewById(R.id.button4);
+        jp101.setVisibility(View.INVISIBLE);
+        jp100 = findViewById(R.id.button3);
+        jp100.setVisibility(View.INVISIBLE);
 
         pytanie = (EditText) findViewById(R.id.trescPytaniaW);
         String pytaniee = pytanie.getText().toString();
@@ -125,6 +131,10 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                 onMapReady(mMap);
                 flagaPunkt = false;
                 flagaKoniec = true;
+                pytanie.setVisibility(View.INVISIBLE);
+                odpowiedz.setVisibility(View.INVISIBLE);
+                jp100.setVisibility(View.INVISIBLE);
+                jp101.setVisibility(View.INVISIBLE);
                 dropdown.setVisibility(View.INVISIBLE);
                 zapisz.setVisibility(View.VISIBLE);
                 //punkt.setVisibility(View.INVISIBLE);
@@ -133,12 +143,6 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                 gratulacje.setVisibility(View.VISIBLE);
             }
         });
-//        punkt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                flagaDodajTaska = true;
-//            }
-//        });
     }
 
     //TODO: Dodawanie zadan do punktów
@@ -148,12 +152,6 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Button jp100;
-        Button jp101;
-        jp101 = findViewById(R.id.button4);
-        jp101.setVisibility(View.INVISIBLE);
-        jp100 = findViewById(R.id.button3);
-        jp100.setVisibility(View.INVISIBLE);
 
 
 
@@ -186,8 +184,6 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                             String r_Zadania = dropdown.getSelectedItem().toString();
                             int rodzaj_Zadania = Integer.parseInt(r_Zadania);
                             if (rodzaj_Zadania != 3) {
-                                //rodzajeZadan[markerList.size() - 2] = rodzaj_Zadania;
-                                //latLangi[markerList.size() - 2] = latLng;
                                 System.out.println(rodzaj_Zadania);
                                 punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, "test" + numerek, "test" + numerek)));
                             } else {
@@ -226,6 +222,41 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         //mMap.clear();
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                         markerList.add(mMap.addMarker((markerOptions)));
+
+                        if (flagaDodajTaska) {
+                            jp100.setVisibility(View.INVISIBLE);
+                            dropdown.setVisibility(View.INVISIBLE);
+                            String r_Zadania = dropdown.getSelectedItem().toString();
+                            int rodzaj_Zadania = Integer.parseInt(r_Zadania);
+                            if (rodzaj_Zadania != 3) {
+                                System.out.println(rodzaj_Zadania);
+                                punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(6, rodzaj_Zadania, "testKoniec", "testKoniec")));
+                            } else {
+                                jp101.setVisibility(View.VISIBLE);
+                                jp101.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        jp100.setVisibility(View.VISIBLE);
+                                        pytanie.setVisibility(View.VISIBLE);
+                                        odpowiedz.setVisibility(View.VISIBLE);
+                                        jp101.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+                                jp100.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String pytaniee = pytanie.getText().toString();
+                                        String odpowiedzz = odpowiedz.getText().toString();
+                                        punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(6, rodzaj_Zadania, pytaniee, odpowiedzz)));
+                                        pytanie.setVisibility(View.INVISIBLE);
+                                        odpowiedz.setVisibility(View.INVISIBLE);
+                                        pytanie.setText("Pytanie");
+                                        odpowiedz.setText("Odpowiedź");
+                                        jp100.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+                            }
+                        }
                         //String r_Zadania = dropdown.getSelectedItem().toString();
                         //int rodzaj_Zadania = Integer.parseInt(r_Zadania);
                         //rodzajeZadan[5] = rodzaj_Zadania;
@@ -242,7 +273,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
 //                        System.out.println(latLangi[2]);
 //                        System.out.println(latLangi[3]);
 //                        System.out.println(latLangi[4]);
-                        punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(89, 0, "koniec", "koniec")));
+                        //punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(89, 0, "koniec", "koniec")));
                         //Tu sie dzieje dodawanie punktow
 //                        for (int i = 0; i < markerList.size() - 2; i++) {
 //                            punktKontrolne.add(new PunktKontrolny(latLangi[i], "Punkt" + i + 1, new Zadanie(i + 1, rodzajeZadan[i + 1], "test" + i + 1, "tak")));
