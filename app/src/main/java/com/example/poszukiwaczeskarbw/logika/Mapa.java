@@ -6,10 +6,13 @@
 
 package com.example.poszukiwaczeskarbw.logika;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Mapa implements Serializable {
+public class Mapa {
     private int _ID;
     private int _IDAutora;
     private String imieAutora = "Poszukiwacz";
@@ -23,6 +26,9 @@ public class Mapa implements Serializable {
         this.nazwiskoAutora = nazwiskoAutora;
         this.nazwa = nazwa;
         this.opisSkarbu = opisSkarbu;
+    }
+
+    public Mapa() {
     }
 
     public int get_ID() {
@@ -103,4 +109,6 @@ public class Mapa implements Serializable {
         stringBuilder.append("#");
         return stringBuilder.toString();
     }
+
 }
+

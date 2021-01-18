@@ -206,7 +206,78 @@ public class Baza {
         return false;
     }
 
-    public ArrayList<Mapa> pobierzMapeZBazyDanych(){
+    public Mapa pobierzMapeZBazyDanych(int _IDMapy){
+        polacz();
+        Mapa mapeczka = new Mapa();
+        String zapytanie = "select idMapy,idAutora,zapis,iloscPunktow,opisSkarbu from Mapy where idMapy = "+ _IDMapy;
+        try (PreparedStatement komunikat = polaczenie.prepareStatement(zapytanie)) {
+            ResultSet tablicaWynikow = komunikat.executeQuery();
+            if (tablicaWynikow.next()) {
+                int rozmiar =0;
+                String[] stringi = new String[45];
+                double[] latLangi = new double[14];
+                int _ID = tablicaWynikow.getInt(1);
+                int _IDA = tablicaWynikow.getInt(2);
+                String zapis =tablicaWynikow.getString(3);
+                int iloscPunktow = tablicaWynikow.getInt(4);
+                String opisSkarbu = tablicaWynikow.getString(5);
+                //imieAutora;nazwisko;nazwa;wspp1;nazwap1;nrZad,rodzZad,tresczad,wynikZad ....
+                //
+                int i =0;
+                int c=0;
+                StringBuilder budowniczy = new StringBuilder();
+                while (zapis.charAt(i) != '#'){ //dopuki nie # czyli znak konza zapisu
+                    //dopuki nie ; tworz wartosc
+                    if (zapis.charAt(i) != ';'){ //dochodi do ; i dalej petla nie idzie
+                        budowniczy.append(zapis.charAt(i));
+                    }
+                    if (zapis.charAt(i) == ';'){
+                        //jak jest ; tworzy obiekt i zeruje tworzenie
+                        stringi[rozmiar] = budowniczy.toString();
+                        budowniczy = new StringBuilder();
+                        System.out.println(stringi[rozmiar]);
+                        if (zapis.charAt(i+1) != '#')
+                            rozmiar++;
+                    }
+                    i++;
+                }
+                for (int j = 3; j <= 41; j=j+6) {
+                    System.out.println(j);
+                    stringi[j] = stringi[j].substring(10);
+                    stringi[j] = stringi[j].substring(0,stringi[j].length()-1);
+                    latLangi[c] = Double.parseDouble(stringi[j].split(",")[0]);
+                    c++;
+                    latLangi[c] = Double.parseDouble(stringi[j].split(",")[1]);
+                    c++;
+                }
+                mapeczka.setImieAutora(stringi[0]);
+                mapeczka.setNazwiskoAutora(stringi[1]);
+                mapeczka.setNazwa(stringi[2]);
+                mapeczka.setOpisSkarbu(opisSkarbu);
+                mapeczka.set_ID(_ID);
+                mapeczka.set_IDAutora(_IDA);
+                mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[0],latLangi[1]),stringi[4],new Zadanie(Integer.parseInt(stringi[5]),Integer.parseInt(stringi[6]),stringi[7],stringi[8]))); //start
+                mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[2],latLangi[3]),stringi[10],new Zadanie(Integer.parseInt(stringi[11]),Integer.parseInt(stringi[12]),stringi[13],stringi[14])));
+                if (iloscPunktow > 2)
+                    mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[4],latLangi[5]),stringi[16],new Zadanie(Integer.parseInt(stringi[17]),Integer.parseInt(stringi[18]),stringi[19],stringi[20])));
+                if (iloscPunktow > 3)
+                    mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[6],latLangi[7]),stringi[22],new Zadanie(Integer.parseInt(stringi[23]),Integer.parseInt(stringi[24]),stringi[25],stringi[26])));
+                if (iloscPunktow > 4)
+                    mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[8],latLangi[9]),stringi[28],new Zadanie(Integer.parseInt(stringi[29]),Integer.parseInt(stringi[30]),stringi[31],stringi[32])));
+                if (iloscPunktow > 5)
+                    mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[10],latLangi[11]),stringi[34],new Zadanie(Integer.parseInt(stringi[35]),Integer.parseInt(stringi[36]),stringi[37],stringi[38])));
+                if (iloscPunktow > 6)
+                    mapeczka.dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[12],latLangi[13]),stringi[40],new Zadanie(Integer.parseInt(stringi[41]),Integer.parseInt(stringi[42]),stringi[43],stringi[44])));
+            }
+            rozlacz();
+        } catch (SQLException e){
+            //TODO: dodac ewentualna obsluge wyjatku
+            e.printStackTrace();
+        }
+        return mapeczka;
+    }
+
+    public ArrayList<Mapa> pobierzWszytskieMapyZBazyDanych(){
         ArrayList<Mapa> mapy = new ArrayList<>();
         polacz();
         int mapa = 0;
@@ -269,6 +340,7 @@ public class Baza {
                     mapy.get(mapa).dodajPunktKontrolny(new PunktKontrolny(new LatLng(latLangi[12],latLangi[13]),stringi[40],new Zadanie(Integer.parseInt(stringi[41]),Integer.parseInt(stringi[42]),stringi[43],stringi[44])));
                 mapa++;
             }
+            rozlacz();
         } catch (SQLException e){
             //TODO: dodac ewentualna obsluge wyjatku
             e.printStackTrace();

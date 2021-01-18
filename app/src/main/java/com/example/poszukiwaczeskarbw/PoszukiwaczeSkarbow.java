@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.poszukiwaczeskarbw.ui.ListaSkarbow;
 import com.example.poszukiwaczeskarbw.ui.Logowanie;
 import com.example.poszukiwaczeskarbw.ui.Rejestracja;
 import com.example.poszukiwaczeskarbw.ui.SzukajSkarb;
@@ -38,16 +39,6 @@ public class PoszukiwaczeSkarbow extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signUp = new Intent(getApplicationContext(), Rejestracja.class);
                 startActivity(signUp);
-            }
-        });
-
-        Button debug = findViewById(R.id.button);
-        debug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent debug = new Intent(getApplicationContext(), SzukajSkarb.class);
-                //Intent debug = new Intent(getApplicationContext(), DodajSkarb.class);
-                startActivity(debug);
             }
         });
     }

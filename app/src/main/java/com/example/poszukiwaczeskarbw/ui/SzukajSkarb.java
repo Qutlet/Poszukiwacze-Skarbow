@@ -64,7 +64,8 @@ public class SzukajSkarb extends FragmentActivity implements OnMapReadyCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        mapa = (Mapa) bundle.get("mapa");
+        int map_ID = bundle.getInt("id_mapy");
+        mapa = baza.pobierzMapeZBazyDanych(map_ID);
         setContentView(R.layout.activity_szukaj_skarb);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
