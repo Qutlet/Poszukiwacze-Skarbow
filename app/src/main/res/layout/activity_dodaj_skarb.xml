@@ -19,7 +19,7 @@
         android:layout_marginTop="4dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Wpisz dokładną lokalizację skarbu"
+        android:text="Podaj dokładan lokalizacje skarbu"
         app:layout_constraintTop_toBottomOf="@+id/map"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -31,7 +31,7 @@
         android:layout_marginEnd="100dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Wpisz nazwę mapy"
+        android:text="Nazwa mapy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 

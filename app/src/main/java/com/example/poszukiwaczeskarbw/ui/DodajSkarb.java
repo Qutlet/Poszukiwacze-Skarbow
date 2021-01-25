@@ -42,6 +42,9 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
     public boolean flagaDodajTaska = false;
     public boolean flagatekst = false;
     public boolean flagatekst1 = false;
+    String z1 = "Potrząśnij telefonem";
+    String z2 = "Zbliz reke do ekranu na 2cm";
+    String z3 = "Zbliz telefon do metalu";
     LatLng[] latLangi = new LatLng[6];
     int[] rodzajeZadan = new int[6];
     ArrayList<Marker> markerList = new ArrayList<>();
@@ -185,7 +188,12 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                             int rodzaj_Zadania = Integer.parseInt(r_Zadania);
                             if (rodzaj_Zadania != 3) {
                                 System.out.println(rodzaj_Zadania);
-                                punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, "test" + numerek, "test" + numerek)));
+                                if(rodzaj_Zadania == 0)
+                                    punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, z1, "test" + numerek)));
+                                if(rodzaj_Zadania == 1)
+                                    punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, z2, "test" + numerek)));
+                                if(rodzaj_Zadania == 2)
+                                    punktKontrolne.add(new PunktKontrolny(latLng, "Punkt" + numerek, new Zadanie(numerek, rodzaj_Zadania, z3, "test" + numerek)));
                             } else {
                                 jp101.setVisibility(View.VISIBLE);
                                 jp101.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +238,12 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                             int rodzaj_Zadania = Integer.parseInt(r_Zadania);
                             if (rodzaj_Zadania != 3) {
                                 System.out.println(rodzaj_Zadania);
-                                punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(6, rodzaj_Zadania, "testKoniec", "testKoniec")));
+                                if(rodzaj_Zadania == 0)
+                                    punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(6, rodzaj_Zadania, z1, "testKoniec")));
+                                if(rodzaj_Zadania == 1)
+                                    punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(6, rodzaj_Zadania, z2, "testKoniec")));
+                                if(rodzaj_Zadania == 2)
+                                    punktKontrolne.add(new PunktKontrolny(latLng, "Koniec", new Zadanie(6, rodzaj_Zadania, z3, "testKoniec")));
                             } else {
                                 jp101.setVisibility(View.VISIBLE);
                                 jp101.setOnClickListener(new View.OnClickListener() {

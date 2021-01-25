@@ -45,6 +45,9 @@ public class ProfilUzytkownika extends AppCompatActivity {
         Button usun = findViewById(R.id.usun_konto);
         usun.setOnClickListener(V->{
             baza.usunUzytkownika(uzytkownik.getEmail());
+            Intent intent = new Intent(getApplicationContext(), PoszukiwaczeSkarbow.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         });
         Button wyloguj = findViewById(R.id.wyloguj);
         wyloguj.setOnClickListener(V->{
