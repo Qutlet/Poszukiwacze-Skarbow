@@ -163,7 +163,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                     markerOptions.position(latLng);
                     markerOptions.title("Start");
                     mMap.clear();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                     markerList.add(mMap.addMarker((markerOptions)));
                     punktKontrolne.add(new PunktKontrolny(latLng, "Start", new Zadanie(99, 0, "start", "start")));
                 }
@@ -175,9 +175,9 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         markerOptions.position(latLng);
                         markerOptions.title("Punkt " + markerList.size());
                         //mMap.clear();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                         markerList.add(mMap.addMarker((markerOptions)));
-                        int numerek = markerList.size() - 1;
+                        int numerek = markerList.size();
                         if (flagaDodajTaska) {
                             jp100.setVisibility(View.INVISIBLE);
                             dropdown.setVisibility(View.VISIBLE);
@@ -220,7 +220,7 @@ public class DodajSkarb extends FragmentActivity implements OnMapReadyCallback {
                         markerOptions.title("Koniec");
                         //dropdown.setVisibility(View.INVISIBLE);
                         //mMap.clear();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                         markerList.add(mMap.addMarker((markerOptions)));
 
                         if (flagaDodajTaska) {
